@@ -87,6 +87,10 @@ h1 {
 	-webkit-animation:fade 3000ms infinite;
 }
 
+.input-group {
+	margin: 10px auto;
+}
+
 #navigator-modal .modal-content {
 	background-color: transparent;
 	margin-top: 25%;
@@ -97,10 +101,29 @@ h1 {
 	height: 4em;
 	margin-top: 0 !important;
 	margin-bottom: 2em;
-	-webkit-box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-	box-shadow: 0 5px 15px rgba(0,0,0,0.25);
 }
 .menu-buttons .nav-button.disabled {
 	-webkit-box-shadow: none;
 	box-shadow: none;
+}
+
+.daterangepicker {
+	padding: 1.5em 2em;
+}
+.daterangepicker .ranges {
+	text-align: center;
+}
+.daterangepicker .calendar-time {
+	text-align: center;
+	margin-bottom: 10px;
+}
+.daterangepicker .calendar-time select {
+	padding: 5px;
+}
+.calendar-table td,
+.calendar-table th {
+	text-align: center;
+}
+.daterangepicker td.start-date.end-date {
+	border-radius: 45% !important;
 }

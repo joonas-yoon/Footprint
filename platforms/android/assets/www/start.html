@@ -50,23 +50,15 @@
     <!-- Google Maps -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initialize"></script>
 
-    <title>Hello World</title>
+    <!-- Date Range Picker -->
+    <!-- Include Required Prerequisites -->
+    <script type="text/javascript" src="themes/moment.min.js"></script>
 
-    <style>
-        #navigator-modal .modal-content {
-        background-color: transparent;
-        margin-top: 25%;
-        border: none;
-        box-shadow: none;
-        }
-        .menu-buttons .nav-button {
-        height: 4em;
-        margin-top: 0 !important;
-        margin-bottom: 2em;
-        -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-        }
-    </style>
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="themes/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="themes/daterangepicker.css" />
+
+    <title>Hello World</title>
 </head>
 
 <body>
@@ -95,6 +87,10 @@
                     <div class="col-sm-12 col-md-6">
                         <button href="start.html" class="btn btn-default btn-block nav-button">시작하기</button>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="container">
                     <div class="col-sm-12 col-md-6">
                         <button href="history.html" class="btn btn-default btn-block nav-button">기록보기</button>
                     </div>
@@ -105,6 +101,10 @@
                     <div class="col-sm-12 col-md-6">
                         <button href="setting.html" class="btn btn-default btn-block nav-button">환경설정</button>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="container">
                     <div class="col-sm-12 col-md-6">
                         <button href="index.html" class="btn btn-default btn-block nav-button">처음으로</button>
                     </div>
@@ -115,7 +115,36 @@
 </div><!-- /.modal -->
 
 <div class="container">
-    그... 기록 시작하는 페이지
+    <div style="display:block;height:3em;"></div>
+    <div class="input-group">
+        <select class="form-control" id="record-interval" name="interval">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="60">60</option>
+        </select>
+        <span class="input-group-addon">분 마다 기록</span>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" id="startDate" value="07/01/2015" data-type="date-range">
+                <span class="input-group-addon">부터</span>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" id="endDate" value="07/01/2015" data-type="date-range">
+                <span class="input-group-addon">까지</span>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align:center;margin-top:3em;">
+        <button class="btn btn-primary btn-lg">기록 시작!</button>
+    </div>
 </div>
 
 <script type="text/javascript" src="cordova.js"></script>
