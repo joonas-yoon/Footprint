@@ -120,6 +120,7 @@
             <option value="20">20</option>
             <option value="30">30</option>
             <option value="60">60</option>
+            <option value="120">120</option>
         </select>
         <span class="input-group-addon">분 마다 기록</span>
     </div>
@@ -127,20 +128,20 @@
     <div class="row">
         <div class="col-sm-12 col-md-6">
             <div class="input-group">
-                <input type="text" class="form-control" id="startDate" value="07/01/2015" data-type="date-range">
+                <input type="text" class="form-control" id="startDate" value="" data-type="date-range">
                 <span class="input-group-addon">부터</span>
             </div>
         </div>
         <div class="col-sm-12 col-md-6">
             <div class="input-group">
-                <input type="text" class="form-control" id="endDate" value="07/01/2015" data-type="date-range">
+                <input type="text" class="form-control" id="endDate" value="" data-type="date-range">
                 <span class="input-group-addon">까지</span>
             </div>
         </div>
     </div>
 
     <div style="text-align:center;margin-top:3em;">
-        <button class="btn btn-primary btn-lg">기록 시작!</button>
+        <button href="recording.html" class="btn btn-primary btn-lg">기록 시작!</button>
     </div>
 </div>
 
@@ -150,13 +151,13 @@
 
 <script type="text/javascript">
 		app.initialize();
-		function main(){
-			$("#Button").on("click", function(){
-				$(this).html("Stop");
-				alert("Click!");
-			});
-		}
-		document.addEventListener("deviceready", main, false);
+        $(function(){
+            console.log($("#endDate").val());
+
+            console.log( momentToKor(moment().add(1, 'hour')) );
+            $("#endDate").val( momentToKor(moment().add(1, 'hour')) );
+            console.log($("#endDate").val());
+        });
 </script>
 </body>
 
