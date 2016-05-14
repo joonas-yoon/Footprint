@@ -40,7 +40,7 @@ document.addEventListener("deviceready", function(){
 
 }, false);
 
-function splitDate(text){
+window.splitDate = function(text){
 	var r = text.split(/[^0-9\s]/);
 	return {
 		year: parseInt(r[0]),
@@ -50,4 +50,58 @@ function splitDate(text){
 		min : parseInt(r[4]),
 		sec : parseInt(r[5])
 	};
+}
+
+
+/**
+ *
+ *   google maps script
+ *
+**/
+window.onMapLoad = function() {
+	//if (isConnected) {
+		// google api를 동적으로 Load한다.
+		var fileref = document.createElement('script');
+		fileref.setAttribute("type", "test/javascript");
+		fileref.setAttribute("src",
+			"http://maps.google.com/maps/api/js?key=AIzaSyA8g19UNRVSoaIBM5fXqApuojGkSm5pFdI&callback="
+				+ "getGeolocation");
+		document.getElementsByTagName("head")[0].appendChild(fileref);
+	//} else {
+	//	alert("Must be connected to the Internet");
+	//}
+}
+
+window.getGeolocation = function(path){
+	// get the user's gps coordinates and display map
+	var options = {
+		maximumAge: 3000,
+		timeout : 5000,
+		enableHighAccuracy: true
+	};
+	navigator.geolocation.getCurrentPosition(loadMap, geoError, options);
+}
+
+window.loadMap = function(position) {
+	var latlng = new google.maps.LatLng (
+		position.coords.latitude,
+		position.coords.longitude
+	);
+	var options = {
+		zoom : 16,
+		center : latlng,
+		mapTypeId : google.maps.MapTypeId.ROADMAP
+	};
+	var mapObject = document.getElementById("maps");
+	var map = new google.maps.Map(mapObject, options);
+	var marker = new google.maps.Marker({
+		position: latlng,
+		map: map,
+		animation: google.maps.Animation.DROP,
+		title: "You"
+	});
+}
+
+window.geoError = function(error) {
+	alert('code: ' + error.code + ' '+ 'message: ' + error.message + ' ');
 }
