@@ -48,7 +48,7 @@
 	<script src="themes/bootflat/js/bootstrap.min.js"></script>
 
 	<!-- Google Maps -->
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyA8g19UNRVSoaIBM5fXqApuojGkSm5pFdI&callback=getGeolocation"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&callback=getGeolocation"></script>
 
 	<title>Hello World</title>
 </head>
@@ -111,6 +111,8 @@
 
 	<button class="btn btn-default btn-block" onclick="getGeolocation();">현재 위치 찾기</button>
 
+	<button class="btn btn-default btn-block" onclick="pathTest();">경로 보기 예시</button>
+
 
 </div>
 
@@ -125,6 +127,15 @@
 		$(function(){
 			getGeolocation();
 		});
+
+		window.pathTest = function(){
+			var path = [];
+			path.push({lat: 41.85, lng: -87.65});
+			path.push({lat: 40.25, lng: -83.25});
+			path.push({lat: 41.05, lng: -84.85});
+			path.push({lat: 39.79, lng: -86.14});
+			getGeolocation(path);
+		}
 </script>
 </body>
 

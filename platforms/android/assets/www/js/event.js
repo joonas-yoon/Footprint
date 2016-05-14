@@ -64,7 +64,7 @@ window.onMapLoad = function() {
 		var fileref = document.createElement('script');
 		fileref.setAttribute("type", "test/javascript");
 		fileref.setAttribute("src",
-			"http://maps.google.com/maps/api/js?key=AIzaSyA8g19UNRVSoaIBM5fXqApuojGkSm5pFdI&callback="
+			"http://maps.google.com/maps/api/js?v=3&callback="
 				+ "getGeolocation");
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 	//} else {
@@ -79,7 +79,49 @@ window.getGeolocation = function(path){
 		timeout : 5000,
 		enableHighAccuracy: true
 	};
-	navigator.geolocation.getCurrentPosition(loadMap, geoError, options);
+	if( ! path || path.length < 2 ){
+	    navigator.geolocation.getCurrentPosition(loadMap, geoError, options);
+	} else {
+	    drawPath(path);
+	}
+}
+
+window.drawPath = function(path) {
+	var map = new google.maps.Map(document.getElementById('maps'), {
+		center: path[0],
+		scrollwheel: false,
+		zoom: 10
+	});
+
+	var directionsDisplay = new google.maps.DirectionsRenderer({
+		map: map
+	});
+
+	// Set destination, origin and travel mode.
+	var wpts = [];
+	for(var i=1; i<path.length - 1; ++i){
+	    wpts.push({
+            location: new google.maps.LatLng(path[i].lat, path[i].lng),
+            stopover: true
+	    });
+	}
+
+	var request = {
+		destination: path[path.length - 1],
+		origin: path[0],
+        waypoints: wpts,
+        optimizeWaypoints: true,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
+
+	// Pass the directions request to the directions service.
+	var directionsService = new google.maps.DirectionsService();
+	directionsService.route(request, function(response, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			// Display the route on the map.
+			directionsDisplay.setDirections(response);
+		}
+	});
 }
 
 window.loadMap = function(position) {
