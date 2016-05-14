@@ -47,25 +47,12 @@
     <script src="themes/bootflat/js/jquery-1.10.1.min.js"></script>
     <script src="themes/bootflat/js/bootstrap.min.js"></script>
 
-    <!-- Google Maps -->
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initialize"></script>
-
-    <!-- Date Range Picker -->
-    <!-- Include Required Prerequisites -->
-    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
-
-    <!-- Include Date Range Picker -->
-    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-
     <title>Hello World</title>
 </head>
 
 <body>
 
-<nav class="navbar navbar-default" role="navigation" onclick="$('#navigator-modal').modal();" style="padding-top:5px;padding-bottom:5px;">
+<nav class="navbar navbar-default" role="navigation" style="padding-top:5px;padding-bottom:5px;">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse">
@@ -75,80 +62,92 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#" style="padding: 10px 15px;color: #1A9953;">
-                <img src="img/icon_128.png" style="width:30px;display:inline;margin-right:7px;"/>&nbsp;발자국
+                <img src="img/icon_128.png" style="width:30px;display:inline;margin-right:7px;"/>&nbsp;기록 수집
             </a>
         </div>
     </div>
 </nav>
 
-<div id="navigator-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content menu-buttons">
-            <div class="row">
-                <div class="container">
-                    <div class="col-sm-12 col-md-6">
-                        <button href="start.html" class="btn btn-default btn-block nav-button">시작하기</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="container">
-                    <div class="col-sm-12 col-md-6">
-                        <button href="history.html" class="btn btn-default btn-block nav-button">기록보기</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="container">
-                    <div class="col-sm-12 col-md-6">
-                        <button href="setting.html" class="btn btn-default btn-block nav-button">환경설정</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="container">
-                    <div class="col-sm-12 col-md-6">
-                        <button href="index.html" class="btn btn-default btn-block nav-button">처음으로</button>
-                    </div>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <div class="container">
-    <h3 class="header">기록중</h3>
+    <h3 class="header">기록 중...</h3>
 
     <div class="progress progress-striped active">
-        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%; height: 2em;">
-            <span class="sr-only">20% 진행</span>
+        <div id="progressBar" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height: 2em;">
+            <span class="sr-only"></span>
         </div>
     </div>
 
     <div class="input-group">
-        <input class="form-control" disabled value="5"/>
+        <input class="form-control" id="interval" disabled value="5"/>
         <span class="input-group-addon">분 마다 기록</span>
     </div>
 
-    <input type="text" class="form-control" id="startDate" value="07/01/2015" data-type="date-range">
-    <br>
-    <input type="text" class="form-control" id="endDate" value="07/01/2015" data-type="date-range">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" id="startDate" value="" data-type="date-range" disabled>
+                <span class="input-group-addon">부터</span>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" id="endDate" value="" data-type="date-range" disabled>
+                <span class="input-group-addon">까지</span>
+            </div>
+        </div>
+    </div>
 
+    <div style="text-align:center;margin-top:3em;">
+        <button id="stop" href="view.html" class="btn btn-danger btn-lg">기록 중지</button>
+    </div>
+
+    <div id="resultList" data-role="list-view"></div>
 </div>
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript" src="js/event.js"></script>
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="themes/moment.min.js"></script>
+
+<script type="text/javascript">
+    var progressTimer;
+    $(function(){
+        var start = moment( window.localStorage.getItem('startDate') * 1000 );
+        var end = moment( window.localStorage.getItem('endDate') * 1000 );
+        alert( window.localStorage.getItem('startDate') );
+        console.log(start);
+        $("#startDate").val( momentToKor(start) );
+        $("#endDate").val( momentToKor(end) );
+
+        $("#stop").on("click", function(){
+            alert("어플 정지!");
+            clearInterval(progressTimer);
+        });
+
+        progressTimer = setInterval(function(){
+            var total = (end - start) / 1000;
+            var curr = (moment() - start) / 1000;
+
+            console.log( total +' , '+ curr );
+
+            var percent = (curr / total) * 100;
+
+            if( percent >= 100 ){
+                $("#stop").click();
+            }
+
+            $("#progressBar").attr('aria-valuenow', Math.floor(percent));
+            $("#progressBar").css('width', percent + '%');
+
+            console.log( percent );
+
+        }, 1000);
+    });
+</script>
 
 <script type="text/javascript">
 		app.initialize();
-		function main(){
-			$("#Button").on("click", function(){
-				$(this).html("Stop");
-				alert("Click!");
-			});
-		}
-		document.addEventListener("deviceready", main, false);
 </script>
 </body>
 

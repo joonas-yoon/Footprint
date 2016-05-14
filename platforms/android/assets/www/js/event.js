@@ -49,9 +49,37 @@ window.momentToKor = function(mmt) {
 }
 
 /**
- *
+ * 데이터베이스 관련 함수
+**/
+window.dbConnect = function(dbname, desc){
+    if( ! dbname ) dbname = 'Dummy DB';
+    if( ! desc ) desc = 'No Description';
+    var db = window.openDatabase(dbname, "1.0", desc, 65537); //will create database Dummy_DB or open it
+    console.log('Connected DB : ' + db);
+    return db;
+}
+
+window.setupTable = function(tx){
+    tx.executeSql('DROP TABLE IF EXISTS paths');
+    tx.executeSql('DROP TABLE IF EXISTS records');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIMESTAMP NOT NULL, end_time TIMESTAMP NOT NULL, interval INTEGER NOT NULL)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS paths (id INTEGER PRIMARY KEY AUTOINCREMENT, rid INTEGER NOT NULL, lat REAL NOT NULL, lng REAL NOT NULL, start_time TIMESTAMP NOT NULL, end_time TIMESTAMP NOT NULL )');
+};
+
+window.dbErrorHandler = function(err) {
+    alert("Error processing SQL: "+err.code);
+}
+
+window.renderQueue = function(tx, result){
+    // $('#resultQueue').empty();
+    $.each(result.rows,function(index){
+        var row = result.rows.item(index);
+        $('#resultQueue').append('<p>'+row['title']+', 경도: '+row['comment']+', 시간: ' + row['start_time'] + '</p>');
+    });
+}
+
+/**
  *   google maps script
- *
 **/
 window.onMapLoad = function() {
 	//if (isConnected) {
@@ -85,38 +113,30 @@ window.drawPath = function(path) {
 	var map = new google.maps.Map(document.getElementById('maps'), {
 		center: path[0],
 		scrollwheel: false,
-		zoom: 10
+		zoom: 17,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
 	});
 
-	var directionsDisplay = new google.maps.DirectionsRenderer({
-		map: map
-	});
+    var poly = new google.maps.Polyline({
+        strokeColor: '#D86F5E',
+        strokeOpacity: 0.85,
+        strokeWeight: 5
+    });
+    poly.setMap(map);
+
+    var paths = poly.getPath();
 
 	// Set destination, origin and travel mode.
-	var wpts = [];
-	for(var i=1; i<path.length - 1; ++i){
-	    wpts.push({
-            location: new google.maps.LatLng(path[i].lat, path[i].lng),
-            stopover: true
-	    });
+	for(var i=0; i<path.length; ++i){
+	    var latlng = new google.maps.LatLng(path[i].lat, path[i].lng);
+	    paths.push(latlng);
+	    console.log(path[i]);
+	    new google.maps.Marker({
+            position: latlng,
+            title: '#' + paths.getLength(),
+            map: map
+        });
 	}
-
-	var request = {
-		destination: path[path.length - 1],
-		origin: path[0],
-        waypoints: wpts,
-        optimizeWaypoints: true,
-		travelMode: google.maps.TravelMode.DRIVING
-	};
-
-	// Pass the directions request to the directions service.
-	var directionsService = new google.maps.DirectionsService();
-	directionsService.route(request, function(response, status) {
-		if (status == google.maps.DirectionsStatus.OK) {
-			// Display the route on the map.
-			directionsDisplay.setDirections(response);
-		}
-	});
 }
 
 window.loadMap = function(position) {

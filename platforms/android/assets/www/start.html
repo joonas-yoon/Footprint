@@ -141,8 +141,10 @@
     </div>
 
     <div style="text-align:center;margin-top:3em;">
-        <button href="recording.html" class="btn btn-primary btn-lg">기록 시작!</button>
+        <button id="submit" class="btn btn-primary btn-lg">기록 시작!</button>
     </div>
+
+    <div id="renderQueue" data-role="listview"></div>
 </div>
 
 <script type="text/javascript" src="cordova.js"></script>
@@ -150,14 +152,32 @@
 <script type="text/javascript" src="js/event.js"></script>
 
 <script type="text/javascript">
-		app.initialize();
-        $(function(){
-            console.log($("#endDate").val());
+    $(function(){
+        $("#submit").on("click", function(){
+            var start = korToMoment($("#startDate").val());
+            var end = korToMoment($("#endDate").val());
+            var error = function(msg){
+                alert(msg);
+                return false;
+            };
 
-            console.log( momentToKor(moment().add(1, 'hour')) );
-            $("#endDate").val( momentToKor(moment().add(1, 'hour')) );
-            console.log($("#endDate").val());
+            if( ! start.isValid() || ! end.isValid() ) return error('유효하지 않은 날짜입니다.');
+            var duration = parseInt( (end - start) / 1000 );
+            var interval = parseInt( $("#record-interval").val() ) * 60;
+            if( ! $.isNumeric(duration) || ! $.isNumeric(interval) ) return error('유효하지 않은 날짜입니다.');
+            if( duration <= interval ) return error('기간이 너무 짧습니다.');
+
+            window.localStorage.setItem('startDate', start.unix());
+            window.localStorage.setItem('endDate', end.unix());
+
+            location.href = 'recording.html';
+            return true;
         });
+    });
+</script>
+
+<script type="text/javascript">
+    app.initialize();
 </script>
 </body>
 
