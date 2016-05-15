@@ -145,7 +145,7 @@ window.loadMap = function(position) {
 		position.coords.longitude
 	);
 	var options = {
-		zoom : 16,
+		zoom : 15,
 		center : latlng,
 		mapTypeId : google.maps.MapTypeId.ROADMAP
 	};

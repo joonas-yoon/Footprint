@@ -115,13 +115,13 @@
     $(function(){
         var start = moment( window.localStorage.getItem('startDate') * 1000 );
         var end = moment( window.localStorage.getItem('endDate') * 1000 );
-        alert( window.localStorage.getItem('startDate') );
+        
         console.log(start);
         $("#startDate").val( momentToKor(start) );
         $("#endDate").val( momentToKor(end) );
 
         $("#stop").on("click", function(){
-            alert("어플 정지!");
+            alert("기록을 중단합니다!");
             clearInterval(progressTimer);
         });
 
